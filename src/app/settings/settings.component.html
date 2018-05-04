@@ -1,0 +1,107 @@
+<section class="content-header">
+        <h1>
+          Settings
+          <small></small>
+        </h1>
+        
+        <ol class="breadcrumb">
+          <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+          <li class="active">Settings</li>
+        </ol>
+</section>
+<section class="content" style="min-height: 0px">
+    <div class="row">
+        <div class="col-xs-12">
+                <div class="box box-info">
+                        <div class="box-header with-border">
+                          <h3 class="box-title">Account information</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form class="form-horizontal" (ngSubmit)="saveChange()" >
+                          <div class="box-body">
+                              <div class="alert alert-success " style="display:none;" id="success1">
+                                  <div >
+                                    <h4><i class="icon fa fa-check"></i> Success</h4>
+                                    Your General information has been successfully changed !</div>
+                              </div>
+                            <div class="form-group">
+                              <label for="inputName" class="col-sm-2 control-label">Name</label>
+            
+                              <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputName" name="name" [(ngModel)]="name"  placeholder="Name" #addName="ngModel"/>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="inputName2" class="col-sm-2 control-label">Last Name</label>
+                  
+                                    <div class="col-sm-10">
+                                      <input type="text" class="form-control" id="inputName2" name="lastName" [(ngModel)]="lastName"  placeholder="Name" #addName="ngModel"/>                                    </div>
+                            </div>
+                            <div class="form-group">
+                                    <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+                  
+                                    <div class="col-sm-10">
+                                      <input type="email" class="form-control" id="inputEmail" name="email" [(ngModel)]="email" placeholder="Email">
+                                    </div>
+                            </div>
+                          </div>
+                          <!-- /.box-body -->
+                          <div class="box-footer">
+                            <button type="submit" class="btn btn-default">Cancel</button>
+                            <button type="submit" class="btn btn-info pull-right">Save</button>
+                          </div>
+                          <!-- /.box-footer -->
+                        </form>
+                      </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Set Password</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form class="form-horizontal"  (ngSubmit)="savePassword()">
+                  <div class="box-body">
+
+                      <div class="alert alert-danger" *ngIf="verifier">
+                          <div >You must confirm your password !</div>
+                      </div>
+                      <div class="alert alert-success " style="display:none;" id="success">
+                          <div >
+                            <h4><i class="icon fa fa-check"></i> Success</h4>
+                            Your password has been successfully changed !</div>
+                      </div>
+
+
+                    <div class="form-group">
+                      <label for="inputPassword" class="col-sm-2 control-label">Password</label>
+    
+                      <div class="col-sm-10">
+                        <input type="password" class="form-control" id="inputPassword" name="password" [(ngModel)]="password"  placeholder="password"/>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                            <label for="inputPassword2" class="col-sm-2 control-label">Confirm password</label>
+          
+                            <div class="col-sm-10">
+                              <input type="password" class="form-control" id="inputPassword2" name="repPassword" name="repPassword" [(ngModel)]="repPassword" placeholder="Confirm password">
+                            </div>
+                    </div>
+                  </div>
+                  <!-- /.box-body -->
+                  <div class="box-footer">
+                    <button type="reset" class="btn btn-default">Cancel</button>
+                    <button type="submit" class="btn btn-info pull-right">Save</button>
+                    <button type="button" data-toggle="modal" class="fade" data-target="#modal-success">Show</button>
+                  </div>
+                  <!-- /.box-footer -->
+                </form>
+              </div>
+        </div>
+
+
+
+    </div>
+</section>

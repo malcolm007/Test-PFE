@@ -1,0 +1,277 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+      Project Detail
+      <small></small>
+    </h1>
+    
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">ProjectDetail</li>
+    </ol>
+</section>
+  <section class="content" style="min-height: 0px">
+      <!-- Info boxes -->
+      <div class="row">
+        <div class="col-xs-12">
+          
+  
+          <div class="box" style="margin-bottom: 0px;">
+            <div class="box-header">
+              <h3 class="box-title">{{active_project.name}} <small><strong>#id : </strong>{{active_project.id}}</small></h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <strong>Creation Date : </strong> {{active_project.dateCreation | date : 'dd/MM/yyyy HH:mm:ss'}} <br>
+              <strong>Description : </strong> {{active_project.description}} <br>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+  </section>
+  <!-- Main content -->
+  <section class="content">
+    <!-- Info boxes -->
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+          <li class="active"><a href="#tab_1" data-toggle="tab">Diagram List</a></li>
+          <li><a href="#tab_2" data-toggle="tab">Shared with</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab_1" *ngIf="reload_diagrams()">
+              
+                  <button type="button" style="margin-bottom: 10px;" class="btn btn-warning pull-right" data-toggle="modal" data-target="#modal-default-add">
+                      New Diagram 
+                    </button>
+                
+                <!-- /.box-header -->
+               
+                  <table   datatable [dtOptions]="dtOptions" id="example1" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                      <th>#Id</th>
+                      <th>Diagram Name</th>
+                      <th>Creation Date</th>
+                      <th>Owner</th>
+                      <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let diagram of diagrams">
+                      <td><a routerLink="/DiagramDetail/{{diagram.id}}"> {{diagram.id}}</a></td>
+                      <td>{{diagram.name}}</td>
+                      <td>{{diagram.dateCreation | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
+                      <td>{{diagram.creator.nom}} {{diagram.creator.prenom}}</td>
+                      <td> <a *ngIf="verifierOpenInEditor(diagram)" href="/editor/{{diagram.id}}" target="_blank" class="btn btn-info">Open in Editor</a>
+                          <a *ngIf="verifierRead(diagram)" routerLink="/DiagramDetail/{{diagram.id}}" class="btn btn-primary" title="Project Detail"><i class="fa  fa-television"></i></a>
+                          <button *ngIf="verifierEditMetaData(diagram)" type="button" class="btn btn-success" title="Edit diagram" data-toggle="modal" data-target="#modal-default-update" (click)="load(diagram)"><i class="fa fa-edit"></i></button>   
+                          <button *ngIf="verifierEditMetaData(diagram)" type="button" class="btn btn-danger" title="Delete diagram " data-toggle="modal" data-target="#modal-default-delete" (click)="load(diagram)"><i class="fa fa-trash-o"></i></button>
+                          <button  *ngIf="verifierShare(diagram)" type="button" class="btn bg-maroon" title="Share diagram " data-toggle="modal" data-target="#modal-default-share" (click)="load(diagram)"><i class="fa fa-share-alt"></i></button>
+                          
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  
+               
+            </div>
+            <div class="tab-pane" id="tab_2" *ngIf="reload_affectations()">
+                <table datatable  class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Droit</th>
+                      <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let affectation of affectations">
+                      <td>{{affectation.user.nom}} {{affectation.user.prenom}}</td>
+                      <td>{{affectation.user.mail}}</td>
+                      <td>{{affectation.role.name}}</td>
+                      <td><span style="margin-right: 5px" class="label label-success" *ngFor="let droit of affectation.role.droits">{{droit.droit.name}} </span></td>
+                      <td><button type="button" title="Edit project" class="btn btn-success" data-toggle="modal" data-target="#modal-default-update" (click)="load(affectation)"><i class="fa fa-edit"></i></button>
+                        <button type="button" title="Delete project" class="btn btn-danger" data-toggle="modal" data-target="#modal-default-delete" (click)="load(affectation)"><i class="fa fa-trash-o"></i></button>
+                      </td>
+                    </tr>
+                    
+                    </tbody>
+                  </table>
+    
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+  <div class="modal fade" id="modal-default-add">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form-horizontal" #f="ngForm" (ngSubmit)="add()">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">New Diagram</h4>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                  <label for="inputName" class="col-sm-2 control-label">Name</label>
+  
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputName" [(ngModel)]="add_diagram.name" #addName="ngModel" name="name" placeholder="Name" required>
+                    <div class="alert alert-danger" *ngIf="addName.touched && !addName.valid">
+                      <div *ngIf="addName.errors.required">Name is required.</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputDescription" class="col-sm-2 control-label">Description</label>
+  
+                  <div class="col-sm-10">
+                    <textarea  class="form-control" name="description" #addDescription="ngModel" required [(ngModel)]="add_diagram.description" id="inputDescription" ></textarea>
+                    <div class="alert alert-danger" *ngIf="addDescription.touched && !addDescription.valid">
+                      <div *ngIf="addDescription.errors.required">Description is required.</div>
+                    </div>
+                  </div>
+                </div>
+                
+              
+          </div>
+          <div class="modal-footer">
+            <button type="reset" class="btn btn-default pull-left" id="closeButtonAdd" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!f.valid">Save</button>
+          </div>
+        </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+    <!-- /.modal -->
+  
+<div class="modal fade" id="modal-default-update">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form-horizontal" #f1="ngForm" (ngSubmit)="update()">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Update Project</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="inputName" class="col-sm-2 control-label">Name</label>
+    
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="inputName" #updateName="ngModel" [(ngModel)]="active_diagram.name" name="name" placeholder="Name" required="required">
+                      <div class="alert alert-danger" *ngIf="updateName.touched && !updateName.valid">
+                        <div *ngIf="updateName.errors.required">Name is required.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputDescription" class="col-sm-2 control-label">Description</label>
+    
+                    <div class="col-sm-10">
+                      <textarea  class="form-control" id="inputDescription" #updatedescription="ngModel" required [(ngModel)]="active_diagram.description" name="description"></textarea>
+                      <div class="alert alert-danger" *ngIf="updatedescription.touched && !updatedescription.valid">
+                        <div *ngIf="updatedescription.errors.required">Description is required.</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                
+            </div>
+            <div class="modal-footer">
+              <button type="reset" id="closeButtonUpdate" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" [disabled]="!f1.valid">Save</button>
+            </div>
+          </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+</div>
+      <!-- /.modal -->
+
+      <div class="modal fade" id="modal-default-share">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form-horizontal" (ngSubmit)="share()">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Share Diagram</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="users" class="col-sm-3 control-label">User Email</label>
+    
+                    <div class="col-sm-8">
+                      <select class="select2" id="users" name="user" #user="ngModel" [(ngModel)]="id_user"  >
+                        <option *ngFor="let user of users" value="{{user.id}}">{{user.mail}}</option>
+                        
+                      </select>
+                      
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputDescription" class="col-sm-3 control-label">Role</label>
+    
+                    <div class="col-sm-8">
+                      <select  class="form-control select2" id="roles"  required  [(ngModel)]="id_role" name="role">
+                        <option *ngFor="let role of roles" [value]="role.id">{{role.name}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                
+            </div>
+            <div class="modal-footer">
+              <button type="reset" id="closeButtonShare" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" [disabled]="!f1.valid">Share</button>
+            </div>
+          </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+</div>
+      <!-- /.modal -->
+  
+    <div class="modal fade" id="modal-default-delete">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form class="form-horizontal" (ngSubmit)="delete()">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Delete Project</h4>
+              </div>
+              <div class="modal-body">
+                  Would you like to delete htis project ?
+                    
+                  
+              </div>
+              <div class="modal-footer">
+                <button type="reset" id="closeButtonDelete" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Delete</button>
+              </div>
+            </form>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+    </div>
+        <!-- /.modal -->

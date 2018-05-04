@@ -1,0 +1,166 @@
+<section class="content-header" >
+    <h1>
+      Diagram Detail
+      <small></small>
+    </h1>
+    
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">Diagram Detail</li>
+    </ol>
+</section>
+<section class="content" style="min-height: 0px">
+        <!-- Info boxes -->
+        <div class="row" >
+          <div class="col-xs-12">
+            
+    
+            <div class="box" style="margin-bottom: 0px;" *ngIf="active_diagram !== undefined">
+              <div class="box-header">
+                <h3 class="box-title">{{active_diagram.name}} <small>#id : {{active_diagram.id }}</small></h3>
+              </div>
+              <!-- /.box-header -->
+              <div class="box-body">
+                <strong>Creation Date : </strong> {{active_diagram.dateCreation | date : 'dd/MM/yyyy HH:mm:ss'}} <br>
+                <strong>Description : </strong> {{active_diagram.description}} <br>
+              </div>
+              <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+</section>
+
+<section class="content">
+    <div class="row">
+         <div class="col-xs-12">
+        <!-- Custom Tabs -->
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab_1" data-toggle="tab">Shared with</a></li>
+                <li><a href="#tab_2" data-toggle="tab">Recent activity</a></li>
+                </ul>
+                <div class="tab-content">
+                <div class="tab-pane active" id="tab_1" *ngIf="reload()">
+                        <table datatable  class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                  <th>Name</th>
+                                  <th>Email</th>
+                                  <th>Role</th>
+                                  <th>Droit</th>
+                                  <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let affectation of affectations">
+                                  <td>{{affectation.user.nom}} {{affectation.user.prenom}}</td>
+                                  <td>{{affectation.user.mail}}</td>
+                                  <td>{{affectation.role.name}}</td>
+                                  <td><span style="margin-right: 5px" class="label label-success" *ngFor="let droit of affectation.role.droits">{{droit.droit.name}} </span></td>
+                                  <td><button type="button" title="Edit project" class="btn btn-success" data-toggle="modal" data-target="#modal-default-update" (click)="load(affectation)"><i class="fa fa-edit"></i></button>
+                                    <button type="button" title="Delete project" class="btn btn-danger" data-toggle="modal" data-target="#modal-default-delete" (click)="load(affectation)"><i class="fa fa-trash-o"></i></button>
+                                  </td>
+                                </tr>
+                                
+                                </tbody>
+                              </table>
+                </div>
+                <!-- /.tab-pane -->
+                <div class="tab-pane" id="tab_2" *ngIf="reload()">
+                        <table datatable  class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                  <th>#</th>
+                                  <th>User</th>
+                                  <th>Date</th>
+                                  <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                  <td>Activity 1</td>
+                                  <td>amine bougatef</td>
+                                  <td>12/02/2018</td>
+                                  <td>Create a new Class named 'Employee'</td>
+                                </tr>
+                                <tr>
+                                        <td>Activity 2</td>
+                                        <td>mondher El Falleh</td>
+                                        <td>12/02/2018</td>
+                                        <td>Create a new Class named 'Departement'</td>
+                                      </tr>
+                               
+                                </tbody>
+                              </table>
+                </div>
+                <!-- /.tab-pane -->
+                
+                </div>
+                <!-- /.tab-content -->
+            </div>
+      <!-- nav-tabs-custom -->
+        </div>
+    <!-- /.col -->
+    </div>
+  <!-- /.row -->
+</section>
+<div class="modal fade" id="modal-default-update">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form class="form-horizontal" #f1="ngForm" (ngSubmit)="update()">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">update shared diagram</h4>
+      </div>
+      <div class="modal-body">
+          <div class="form-group">
+              <label for="inputDescription" class="col-sm-3 control-label">Role</label>
+              <div class="col-sm-8">
+                <select  class="form-control select2" id="roles"  required  [(ngModel)]="id_role" name="role">
+                  <option *ngFor="let role of roles" [value]="role.id">{{role.name}}</option>
+                </select>
+              </div>
+            </div>
+            
+          
+      </div>
+      <div class="modal-footer">
+        <button type="reset" id="closeButtonUpdate" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!f1.valid">Update</button>
+      </div>
+    </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div class="modal fade" id="modal-default-delete">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form class="form-horizontal" (ngSubmit)="delete()">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Delete Project</h4>
+      </div>
+      <div class="modal-body">
+          Would you like to delete htis project ?
+            
+          
+      </div>
+      <div class="modal-footer">
+        <button type="reset" id="closeButtonDelete" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Delete</button>
+      </div>
+    </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

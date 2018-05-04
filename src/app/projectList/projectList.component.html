@@ -1,0 +1,220 @@
+<!-- Content Header (Page header) -->
+ <section class="content-header">
+    <h1>
+      Project List
+      <small></small>
+    </h1>
+    
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">ProjectList</li>
+    </ol>
+</section>
+
+  <!-- Main content -->
+  <section class="content">
+    <!-- Info boxes -->
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <div class="box-header">
+            <h3 class="box-title">Project List</h3>
+            <button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#modal-default-add">
+              New Project 
+            </button>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body" *ngIf="reload()">
+            <table datatable id="example1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>Project Id</th>
+                <th>Project Name</th>
+                <th>Creation Date</th>
+                <th>Owner</th>
+                <th>Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let project of projects">
+                <td><a *ngIf="verifierRead(project)" routerLink="/projectDetail/{{project.id}}">{{project.id}}</a> <span *ngIf="!verifierRead(project)">{{project.id}}</span></td>
+                <td>{{project.name}}</td>
+                <td>{{project.dateCreation | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
+                <td>{{project.user.nom}} {{project.user.prenom}}</td>
+                <td> <button *ngIf="verifierEditMetaData(project)" type="button" title="Edit project" class="btn btn-success" data-toggle="modal" data-target="#modal-default-update" (click)="load(project)"><i class="fa fa-edit"></i></button>
+                  <button *ngIf="verifierDelete(project)" type="button" title="Delete project" class="btn btn-danger" data-toggle="modal" data-target="#modal-default-delete" (click)="load(project)"><i class="fa fa-trash-o"></i></button>
+                  <a *ngIf="verifierRead(project)" routerLink="/projectDetail/{{project.id}}" title="Project Detail" class="btn btn-primary"><i class="fa  fa-television"></i></a>
+                  <button  *ngIf="verifierShare(project)" type="button" class="btn bg-maroon" title="Share project " data-toggle="modal" data-target="#modal-default-share" (click)="load(project)"><i class="fa fa-share-alt"></i></button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+  <div class="modal fade" id="modal-default-add">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form class="form-horizontal" #f="ngForm" (ngSubmit)="add()">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">New Project</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="inputName" class="col-sm-2 control-label">Name</label>
+
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" [(ngModel)]="add_project.name" #addName="ngModel" id="inputName" name="name" placeholder="Name" required >
+                  <div class="alert alert-danger" *ngIf="addName.touched && !addName.valid">
+                    <div *ngIf="addName.errors.required">Name is required.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputDescription" class="col-sm-2 control-label">Description</label>
+
+                <div class="col-sm-10">
+                  <textarea  class="form-control" name="description" #addDescription="ngModel" required [(ngModel)]="add_project.description" id="inputDescription" ></textarea>
+                  <div class="alert alert-danger" *ngIf="addDescription.touched && !addDescription.valid">
+                    <div *ngIf="addDescription.errors.required">Description is required.</div>
+                  </div>
+                </div>
+              </div>
+              
+            
+        </div>
+        <div class="modal-footer">
+          <button type="reset" class="btn btn-default pull-left" id="closeButtonAdd" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!f.valid">Save</button>
+        </div>
+      </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <div class="modal fade" id="modal-default-update">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form-horizontal" #f1="ngForm" (ngSubmit)="update()">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Update Project</h4>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                  <label for="inputName" class="col-sm-2 control-label">Name</label>
+  
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputName"  #updateName="ngModel" [(ngModel)]="active_project.name" name="name" placeholder="Name" required>
+                    <div class="alert alert-danger" *ngIf="updateName.touched && !updateName.valid">
+                      <div *ngIf="updateName.errors.required">Name is required.</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputDescription" class="col-sm-2 control-label">Description</label>
+  
+                  <div class="col-sm-10">
+                    <textarea  class="form-control" id="inputDescription" #updatedescription="ngModel" [(ngModel)]="active_project.description" name="description" required></textarea>
+                    <div class="alert alert-danger" *ngIf="updatedescription.touched && !updatedescription.valid">
+                      <div *ngIf="updatedescription.errors.required">Description is required.</div>
+                    </div>
+                  </div>
+                </div>
+                
+              
+          </div>
+          <div class="modal-footer">
+            <button type="reset" id="closeButtonUpdate" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!f1.valid">Save</button>
+          </div>
+        </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+  </div>
+    <!-- /.modal -->
+    <div class="modal fade" id="modal-default-share">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form-horizontal" (ngSubmit)="share()">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Share Diagram</h4>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                  <label for="users" class="col-sm-3 control-label">User Email</label>
+  
+                  <div class="col-sm-8">
+                    <select class="select2" id="users" name="user" #user="ngModel" [(ngModel)]="id_user"  >
+                      <option *ngFor="let user of users" value="{{user.id}}">{{user.mail}}</option>
+                      
+                    </select>
+                    
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputDescription" class="col-sm-3 control-label">Role</label>
+  
+                  <div class="col-sm-8">
+                    <select  class="form-control select2" id="roles"  required  [(ngModel)]="id_role" name="role">
+                      <option *ngFor="let role of roles" [value]="role.id">{{role.name}}</option>
+                    </select>
+                  </div>
+                </div>
+                
+              
+          </div>
+          <div class="modal-footer">
+            <button type="reset" id="closeButtonShare" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!f1.valid">Share</button>
+          </div>
+        </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+    <!-- /.modal -->
+
+  <div class="modal fade" id="modal-default-delete">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form-horizontal" (ngSubmit)="delete()">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Delete Project</h4>
+            </div>
+            <div class="modal-body">
+                Would you like to delete htis project ?
+                  
+                
+            </div>
+            <div class="modal-footer">
+              <button type="reset" id="closeButtonDelete" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Delete</button>
+            </div>
+          </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+  </div>
+      <!-- /.modal -->

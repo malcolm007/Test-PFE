@@ -1,0 +1,210 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+      Users List
+      <small></small>
+    </h1>
+    
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">UsersList</li>
+    </ol>
+</section>
+
+  <!-- Main content -->
+  <section class="content">
+    <!-- Info boxes -->
+    <div class="row">
+      <div class="col-xs-12">
+        
+
+        <div class="box">
+          <div class="box-header">
+            <h3 class="box-title"></h3>
+            <button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#modal-default-add">
+              New User 
+            </button>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body" *ngIf="reload()">
+            <table datatable id="example1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>User Id</th>
+                <th>Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              
+            <tr *ngFor="let user of users">
+                <td>{{user.id}}</td>
+                <td>{{user.nom}}</td>
+                <td>{{user.prenom}}</td>
+                <td>{{user.mail}}</td>
+                <td> <button type="button" title="Edit user" class="btn btn-success" data-toggle="modal" data-target="#modal-default-update" (click)="load(user)"><i class="fa fa-edit"></i></button>
+                  <button type="button" title="Delete user" class="btn btn-danger" data-toggle="modal" data-target="#modal-default-delete" (click)="load(user)"><i class="fa fa-trash-o"></i></button>
+                  
+                </td>
+            </tr>
+             
+              </tbody>
+            </table>
+          </div>
+          <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+  <div class="modal fade" id="modal-default-add">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form class="form-horizontal" #f="ngForm" (ngSubmit)="submit(f,nom,prenom,email,password)">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">New User</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="inputName" class="col-sm-2 control-label">Name</label>
+
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputName" placeholder="Name"  ngModel  #nom="ngModel" name="nom" required>
+                  <div class="alert alert-danger" *ngIf="nom.touched && !nom.valid">
+                    <div *ngIf="nom.errors.required">Name is required.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputName2" class="col-sm-2 control-label">Last Name</label>
+
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputName2" placeholder="Last Name"  ngModel #prenom="ngModel" name="prenom" required="required">
+                  <div class="alert alert-danger" *ngIf="prenom.touched && !prenom.valid">
+                    <div *ngIf="prenom.errors.required" >Last name is required.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+
+                <div class="col-sm-10">
+                  <input type="email" class="form-control" id="inputEmail" placeholder="Email" ngModel  #email="ngModel" name="Email"   required="required">
+                  <div class="alert alert-danger" *ngIf="email.touched && !email.valid">
+                    <div *ngIf="email.errors.required">Email is required.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputPass" class="col-sm-2 control-label">Password</label>
+
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" id="inputPass" placeholder="password" ngModel #password="ngModel" name="password" required="required">
+                    <div class="alert alert-danger" *ngIf="password.touched && !password.valid">
+                      <div *ngIf="password.errors.required">Password is required.</div>
+                    </div>
+                  </div>
+              </div>
+              
+            
+        </div>
+        <div class="modal-footer">
+          <button type="reset" id="closeButtonAdd" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+          <input type="submit" class="btn btn-primary" [disabled]="!f.valid" value="Save"/>
+        </div>
+      </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <div class="modal fade" id="modal-default-update">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form-horizontal" #f1="ngForm" (ngSubmit)="update(f1,nomUpdate,prenomUpdate,emailUpdate,idUpdate)">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Update User</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="inputNameU" class="col-sm-2 control-label">Name</label>
+
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputNameU" placeholder="Name"  ngModel  #nomUpdate="ngModel" [value]="active_user.nom" name="nom" required>
+                <input type="hidden" name="id_user" ngModel  #idUpdate="ngModel" [value]="active_user.id" />
+                <div class="alert alert-danger" *ngIf="nomUpdate.touched && !nomUpdate.valid">
+                  <div *ngIf="nomUpdate.errors.required">Name is required.</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputName2U" class="col-sm-2 control-label">Last Name</label>
+
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputName2U" placeholder="Last Name"  ngModel #prenomUpdate="ngModel" name="prenom" [value]="active_user.prenom" required>
+                <div class="alert alert-danger" *ngIf="prenomUpdate.touched && !prenomUpdate.valid">
+                  <div *ngIf="prenomUpdate.errors.required" >Last name is required.</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputEmailU" class="col-sm-2 control-label">Email</label>
+
+              <div class="col-sm-10">
+                <input type="email" class="form-control" id="inputEmailU" placeholder="Email" ngModel  #emailUpdate="ngModel" name="Email"  [value]="active_user.mail" required>
+                <div class="alert alert-danger" *ngIf="emailUpdate.touched && !emailUpdate.valid">
+                  <div *ngIf="emailUpdate.errors.required">Email is required.</div>
+                </div>
+              </div>
+            </div>
+                
+              
+          </div>
+          <div class="modal-footer">
+            <button type="reset" id="closeButtonUpdate"class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!f1.valid">Save</button>
+          </div>
+        </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+  </div>
+    <!-- /.modal -->
+
+  <div class="modal fade" id="modal-default-delete">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form class="form-horizontal" #f="ngForm" (ngSubmit)="delete(f)">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Delete Project</h4>
+            </div>
+            <div class="modal-body">
+                Would you like to delete this user ?
+                  
+                
+            </div>
+            <div class="modal-footer">
+              <button type="reset" id="closeButtonDelete" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Delete</button>
+            </div>
+          </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+  </div>
+      <!-- /.modal -->

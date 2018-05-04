@@ -1,0 +1,196 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+      Diagram's Role List
+      <small></small>
+    </h1>
+    
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">DiagramRoleList</li>
+    </ol>
+</section>
+
+  <!-- Main content -->
+  <section class="content">
+    <!-- Info boxes -->
+    <div class="row">
+      <div class="col-xs-12">
+        
+
+        <div class="box">
+          <div class="box-header">
+            <h3 class="box-title">Diagram's role List</h3>
+            <button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#modal-default-add">
+              New Diagram Role 
+            </button>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body" *ngIf="reload()">
+            <table datatable id="example1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>Role Id</th>
+                <th>Role Name</th>
+                <th>Droits</th>
+                <th>Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let role of roles">
+                <td>{{role.id}}</td>
+                <td>{{role.name}}</td>
+                <td><span style="margin-right: 5px" class="label label-success" *ngFor="let droit of role.droits">{{droit.droit.name}} </span></td>
+                <td> <button type="button" title="Edit project" class="btn btn-success" data-toggle="modal" data-target="#modal-default-update" (click)="load(role)"><i class="fa fa-edit"></i></button>
+                  <button type="button" title="Delete project" class="btn btn-danger" data-toggle="modal" data-target="#modal-default-delete" (click)="load(role)"><i class="fa fa-trash-o"></i></button>
+                 
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+  <div class="modal fade" id="modal-default-add">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form class="form-horizontal" #f="ngForm" (ngSubmit)="save()">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">New Diagram's role</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="inputName" class="col-sm-2 control-label">Name</label>
+
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" [(ngModel)]="add_role.name" #addName="ngModel" id="inputName" name="name" placeholder="Name" required >
+                  <div class="alert alert-danger" *ngIf="addName.touched && !addName.valid">
+                    <div *ngIf="addName.errors.required">Name is required.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputDescription" class="col-sm-2 control-label">Droits </label>
+
+                <div class="col-sm-10">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" class="minimal-red" name="droit1"  [(ngModel)]="readDroit" id="inputDescription" />READ
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                      <label>
+                        <input type="checkbox" class="minimal-red" name="droit2"  [(ngModel)]="writeDroit" id="inputDescription" />WRITE
+                      </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                          <input type="checkbox" class="minimal-red" name="droit3"  [(ngModel)]="updateDroit" id="inputDescription" />EDIT_METADATA
+                        </label>
+                      </div>
+                </div>
+              </div>
+              
+            
+        </div>
+        <div class="modal-footer">
+          <button type="reset" class="btn btn-default pull-left" id="closeButtonAdd" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!f.valid">Save</button>
+        </div>
+      </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+  <div class="modal fade" id="modal-default-update">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form-horizontal" #f1="ngForm" (ngSubmit)="update()">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Update Diagram's role</h4>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                  <label for="inputName" class="col-sm-2 control-label">Name</label>
+  
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputName"  #updateName="ngModel" [(ngModel)]="active_role.name" name="name" placeholder="Name" required>
+                    <div class="alert alert-danger" *ngIf="updateName.touched && !updateName.valid">
+                      <div *ngIf="updateName.errors.required">Name is required.</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputDescription" class="col-sm-2 control-label">Droits</label>
+  
+                  <div class="col-sm-10">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" class="minimal-red" name="droit1"  [(ngModel)]="readDroitUpdate" id="inputDescription" />READ
+                        </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox" class="minimal-red" name="droit2"  [(ngModel)]="writeDroitUpdate" id="inputDescription" />WRITE
+                          </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                              <input type="checkbox" class="minimal-red" name="droit3"  [(ngModel)]="updateDroitUpdate" id="inputDescription" />EDIT_METADATA
+                            </label>
+                          </div>
+                    </div>
+                </div>
+                
+              
+          </div>
+          <div class="modal-footer">
+            <button type="reset" id="closeButtonUpdate" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!f1.valid">Save</button>
+          </div>
+        </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+  </div>
+    <!-- /.modal -->
+
+  <div class="modal fade" id="modal-default-delete">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form-horizontal" (ngSubmit)="delete()">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Delete Project</h4>
+          </div>
+          <div class="modal-body">
+              Would you like to delete htis project ?
+                
+              
+          </div>
+          <div class="modal-footer">
+            <button type="reset" id="closeButtonDelete" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Delete</button>
+          </div>
+        </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+    <!-- /.modal -->
