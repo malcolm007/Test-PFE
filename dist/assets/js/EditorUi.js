@@ -3440,18 +3440,18 @@ EditorUi.prototype.save = function(name)
 {
     var encoder = new mxCodec();
     var node = encoder.encode(this.editor.graph.getModel());
-	mxUtils.popup(mxUtils.getXml(node));
-	// var url = window.location.href;
-	// idx = url.lastIndexOf('/');
-	// var id = url.substring(idx+1);
-    //  var url = 'http://localhost:8080/api/diagrammes/updater/'+id;
-    //  var xml = encodeURIComponent(mxUtils.getXml(node));
-    
-    //  mxUtils.post(url, 'id_user=1&contenu='+xml, function(req)
-    //  {
-    //     mxUtils.alert('Ready: '+req.isReady()+' Status: '+req.getStatus());
-    //      // Process req.getDocumentElement() using DOM API if OK...
-    //  });
+	//mxUtils.popup(mxUtils.getXml(node));
+	var url = window.location.href;
+	idx = url.lastIndexOf('/');
+	var id = url.substring(idx+1);
+     var url = 'http://localhost:8080/api/diagrammes/updater/'+id;
+     var xml = encodeURIComponent(mxUtils.getXml(node));
+    var id_user = localStorage.getItem('IdUser');
+     mxUtils.post(url, 'id_user='+id_user+'&contenu='+xml, function(req)
+     {
+       // mxUtils.alert('Ready: '+req.isReady()+' Status: '+req.getStatus());
+         // Process req.getDocumentElement() using DOM API if OK...
+     });
 	/*
     if (name != null)
 	{

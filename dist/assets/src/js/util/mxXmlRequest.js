@@ -387,7 +387,6 @@ mxXmlRequest.prototype.setRequestHeaders = function(request, params)
 	if (params != null)
 	{
 		request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-		alert('jjj');
 	}
 };
 
