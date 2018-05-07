@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "node scripts/server.js",
+    "start": "ng serve  --host process.env.OPENSHIFT_NODEJS_IP --port process.env.OPENSHIFT_NODEJS_PORT",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
